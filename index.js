@@ -1,7 +1,7 @@
 //configure express
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
+var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 require('./handlers.js');
@@ -19,41 +19,52 @@ app.get('/', function(req, res){
 });
 
 
-const ClientManager = require('./ClientManager')
-const ChatroomManager = require('./ChatroomManager')
-const makeHandlers = require('./handlers')
+//const ClientManager = require('./ClientManager')
+//const ChatroomManager = require('./ChatroomManager')
+//const makeHandlers = require('./handlers')
 
-const clientManager = ClientManager()
-const chatroomManager = ChatroomManager()
+//const clientManager = ClientManager()
+//const chatroomManager = ChatroomManager()
 
 io.on('connection', function (client) {
 
-    const {
-        handleRegister,
-        handleJoin,
-        handleLeave,
-        handleMessage,
-        handleGetChatrooms,
-        handleGetAvailableUsers,
-        handleDisconnect
-      } = makeHandlers(client, clientManager, chatroomManager);
+  console.log('A user has connected: ' + client.id);
+
+  //   const {
+  //       handleRegister,
+  //       handleJoin,
+  //       handleLeave,
+  //       handleMessage,
+  //       handleGetChatrooms,
+  //       handleGetAvailableUsers,
+  //       handleDisconnect
+  //     } = makeHandlers(client, clientManager, chatroomManager);
 
 
-  client.on('register', handleRegister)
+  // client.on('register', handleRegister)
 
-  client.on('join', handleJoin)
+  // client.on('join', handleJoin)
 
-  client.on('leave', handleLeave)
+  // client.on('leave', handleLeave)
 
-  client.on('message', handleMessage)
+  client.on('message', function(msg_recd){
+    console.log('Client: ' + client.id + " has sent Message: " + msg_recd.msg);
+    if(msg_recd.user_type == 'doctor'){
+      console.log("Doctor sent a message");
+    }
+    else{
+      console.log("Patient asked a question");
+    }
+    io.emit('message', msg_recd.msg);
+  });
 
-  client.on('chatrooms', handleGetChatrooms)
+  // client.on('chatrooms', handleGetChatrooms)
 
-  client.on('availableUsers', handleGetAvailableUsers)
+  // client.on('availableUsers', handleGetAvailableUsers)
 
   client.on('disconnect', function () {
     console.log('client disconnect...', client.id)
-    handleDisconnect()
+    //handleDisconnect()
   })
 
   client.on('error', function (err) {

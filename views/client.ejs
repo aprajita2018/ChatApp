@@ -14,14 +14,22 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <title>General Practitioner Chat Client</title>
         
-        <!--<script src="/socket.io/socket.io.js"></script>-->
+        <script src="/socket.io/socket.io.js"></script>
         
         <script>
-            var socket = io.connect('http://localhost:3000/');
-            socket.on('news', function (data) {
-                console.log(data);
-                socket.emit('my other event', { my: 'data' });
-            });
+            var socket = io();
+            function sendChat(e){
+                var user_type = document.getElementsByName('user')[0].checked ? 'doctor' : 'patient';
+                socket.emit('message', {user_type: user_type, msg: document.getElementById('chat-input').value});
+                document.getElementById('chat-input').value = "";
+                return false;
+            }
+
+            socket.on('message', function(msg){
+                var chat=document.createElement('li');
+                chat.innerText = msg;
+                document.getElementById('chat-list').appendChild(chat);
+            })
         </script>
     
     </head>
@@ -37,8 +45,8 @@
             
             <!--Choosing the profile for chat-->
             <div id="user-profile" class="container m-2 p-2 shadow rounded" style="background-color:rgb(244, 247, 248)" >
-                    <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value=""> Doctor </label>
-                    <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value=""> Patient </label>
+                    <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value="doctor"> Doctor </label>
+                    <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value="patient"> Patient </label>
             </div>
     
             <!--Chat Window = Chat Display + Chat Input-->
@@ -46,19 +54,21 @@
                 
                 <!--Chat Display-->
                 <div class="row m-5">
-                    <div id="chat-display" class="col-12 bg-light" style="min-height: 250px" ></div>
+                    <div id="chat-display" class="col-12 bg-light" style="min-height: 250px" >
+                        <ul id="chat-list"></ul>
+                    </div>
                 </div>
                 
                 <!---Chat Input typing area & send button-->
-                <div class="row m-5">
-                    <div class="col-9">
-                        <textarea id="chat-input" class="font-weight-light text-primary" rows="4" style="width: inherit"></textarea>
+                    <div class="row m-5">
+                        <div class="col-9">
+                            <textarea id="chat-input" class="font-weight-light text-primary" rows="4" style="width: inherit"></textarea>
+                        </div>
+        
+                        <div class="col-3">
+                            <button class="btn btn-lg btn-success mt-5" name="send-msg" id="send" onclick="sendChat()">Send</button>
+                        </div>
                     </div>
-    
-                    <div class="col-3">
-                        <button class="btn btn-lg btn-success mt-5" name="send-msg" id="send">Send</button>
-                    </div>
-                </div>
 
             </div>
         </div>
