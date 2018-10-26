@@ -20,17 +20,81 @@
             var socket = io();
             function sendChat(e){
                 var user_type = document.getElementsByName('user')[0].checked ? 'doctor' : 'patient';
-                socket.emit('message', {user_type: user_type, msg: document.getElementById('chat-input').value});
+                var user_name = document.getElementById('user_name').value;
+                socket.emit('message', {user: {type: user_type, name: user_name}, msg: document.getElementById('chat-input').value});
                 document.getElementById('chat-input').value = "";
                 return false;
             }
 
             socket.on('message', function(msg){
-                var chat=document.createElement('li');
-                chat.innerText = msg;
+                var user_type = document.getElementsByName('user')[0].checked ? 'doctor' : 'patient';
+                var user_name = document.getElementById('user_name').value;
+                
+                var chat=document.createElement('div');
+
+                if(msg.user.type === user_type && msg.user.name === user_name){
+                    chat.setAttribute('class', 'chat-message mychat row');
+                    var name = document.createElement('div');
+                    var icon = document.createElement('div');
+
+                    name.setAttribute('class', 'col-11');
+                    name.innerHTML += "<div class='user_name'>You</div>";
+                    name.innerHTML += "<div class='chat-message-text'>" + msg.msg + "</div>";
+                    
+                    icon.setAttribute('class', 'col-1');
+                    icon.innerHTML += "<i class='profile-icon " + (msg.user.type === 'doctor' ? 'fas fa-2x fa-user-md': 'fas fa-2x fa-user-injured') + "'></i>";
+
+                    chat.appendChild(name);
+                    chat.appendChild(icon);
+                }
+                else{
+                    chat.setAttribute('class', 'chat-message row');
+                    var name = document.createElement('div');
+                    var icon = document.createElement('div');
+
+                    name.setAttribute('class', 'col-11');
+                    name.innerHTML += "<div class='user_name'>" + msg.user.name +"</div>";
+                    name.innerHTML += "<div class='chat-message-text'>" + msg.msg + "</div>";
+                    
+                    icon.setAttribute('class', 'col-1');
+                    icon.innerHTML += "<i class='profile-icon " + (msg.user.type === 'doctor' ? 'fas fa-2x fa-user-md': 'fas fa-2x fa-user-injured') + "'></i>";
+
+                    chat.appendChild(icon);
+                    chat.appendChild(name);
+                }
                 document.getElementById('chat-list').appendChild(chat);
+                chat.scrollIntoView();
             })
         </script>
+        <style>
+            .mychat{
+                text-align: right;
+                float: right;
+            }
+
+            .chat-message{
+                padding: 4px;
+                margin: 2px;
+                width: 60%;
+                background-color: #e8e8ff;
+                clear: both;
+            }
+
+            .user_name{
+                font-size: 0.6em;
+                font-weight: bold;
+                color: #333333;
+            }
+
+            #chat-window{
+                overflow: hidden;
+            }
+
+            #chat-display{
+                overflow-y: scroll;
+                height: 250px;
+            }
+        </style>
     
     </head>
     
@@ -45,8 +109,9 @@
             
             <!--Choosing the profile for chat-->
             <div id="user-profile" class="container m-2 p-2 shadow rounded" style="background-color:rgb(244, 247, 248)" >
-                    <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value="doctor"> Doctor </label>
+                    <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value="doctor" checked="checked"> Doctor </label>
                     <label class="radio-inline px-3 font-weight-normal text-primary"><input type="radio" name="user" value="patient"> Patient </label>
+                    <label class="text-inline px-3 font-weight-normal text-primary" for="user_name">Name: </label><input type="text" id="user_name" name="user_name" />
             </div>
     
             <!--Chat Window = Chat Display + Chat Input-->
@@ -54,8 +119,8 @@
                 
                 <!--Chat Display-->
                 <div class="row m-5">
-                    <div id="chat-display" class="col-12 bg-light" style="min-height: 250px" >
-                        <ul id="chat-list"></ul>
+                    <div id="chat-display" class="col-12 bg-light" >
+                        <div id="chat-list"></div>
                     </div>
                 </div>
                 
