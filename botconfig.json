@@ -2,6 +2,18 @@
     "name": "Health Camp Bot",
     "knowledge_base": [
         {
+            "question"  :   "Hello",
+            "answer"    :   "Hello, How are you doing today?"
+        },
+        {
+            "question"  :   "I am not feeling well",
+            "answer"    :   "Please explain more..."
+        },
+        {
+            "question"  :   "How can you help me",
+            "answer"    :   "try typing: How to cure cold, How to cure fever,..."
+        },
+        {
             "question"  :   "How to cure cold",
             "answer"    :   "Drink fluids, take vitamin C, and see a doctor"
         
@@ -9,6 +21,15 @@
         {
             "question"  :   "How to cure fever",
             "answer"    :   "Drink fluids, sleep, take paracetamol, and see a doctor"
+        },
+        {
+            "question"  :   "I am feeling sore",
+            "answer"    :   "Apply ice-pack, drink plenty of fluids. Usually that helps..."
+        },
+        {
+            "question"  :   "Who are you",
+            "answer"    :   "I am bot designed by Aprajita to answer your health related questions."
         }
+
     ]
 }

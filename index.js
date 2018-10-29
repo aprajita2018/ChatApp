@@ -22,7 +22,7 @@ app.get('/', function(req, res){
 function check_bot_response(txt){
   var questions = bot.knowledge_base;
   for(var i=0; i< questions.length; i++){
-    if(questions[i].question == txt)
+    if( txt.toLowerCase().includes(questions[i].question.toLowerCase()))
       return questions[i].answer;
   }
   return false;
