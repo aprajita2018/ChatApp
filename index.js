@@ -4,6 +4,8 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var bot = require('./botconfig.json');
+
 //set the view engine to ejs
 app.set('view engine', 'ejs');
 //set the directory of views
@@ -17,12 +19,22 @@ app.get('/', function(req, res){
     res.render("client");
 });
 
+function check_bot_response(txt){
+  var questions = bot.knowledge_base;
+  for(var i=0; i< questions.length; i++){
+    if(questions[i].question == txt)
+      return questions[i].answer;
+  }
+  return false;
+}
+
+
 io.on('connection', function (client) {
 
   console.log('A user has connected: ' + client.id);
 
   client.on('message', function(msg_recd){
-    console.log('Client: ' + client.id + " has sent Message: " + msg_recd);
+    console.log('Client: ' + client.id + " has sent Message: " + JSON.stringify(msg_recd));
     if(msg_recd.user.type == 'doctor'){
       console.log("Doctor sent a message");
     }
@@ -30,6 +42,12 @@ io.on('connection', function (client) {
       console.log("Patient asked a question");
     }
     io.emit('message', msg_recd);
+
+    var bot_msg = check_bot_response(msg_recd.msg);
+    if(bot_msg != false){
+      console.log('Sending as bot: ' + bot.name + " - " + bot_msg);
+      io.emit('message', {user: {"type": "bot", "name": bot.name}, "msg": bot_msg});
+    }
   });
 
   client.on('disconnect', function () {

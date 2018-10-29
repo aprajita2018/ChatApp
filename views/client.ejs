@@ -57,7 +57,7 @@
                     name.innerHTML += "<div class='chat-message-text'>" + msg.msg + "</div>";
                     
                     icon.setAttribute('class', 'col-1');
-                    icon.innerHTML += "<i class='profile-icon " + (msg.user.type === 'doctor' ? 'fas fa-2x fa-user-md': 'fas fa-2x fa-user-injured') + "'></i>";
+                    icon.innerHTML += "<i class='profile-icon " + (msg.user.type === 'doctor' ? ('fas fa-2x fa-user-md'): (msg.user_type === 'patient' ? 'fas fa-2x fa-user-injured' : 'fas fa-2x fa-robot')) + "'></i>";
 
                     chat.appendChild(icon);
                     chat.appendChild(name);

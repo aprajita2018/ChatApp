@@ -1,0 +1,14 @@
+{
+    "name": "Health Camp Bot",
+    "knowledge_base": [
+        {
+            "question"  :   "How to cure cold",
+            "answer"    :   "Drink fluids, take vitamin C, and see a doctor"
+        
+        },
+        {
+            "question"  :   "How to cure fever",
+            "answer"    :   "Drink fluids, sleep, take paracetamol, and see a doctor"
+        }
+    ]
+}
